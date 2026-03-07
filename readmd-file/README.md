@@ -29,6 +29,7 @@
     -   `命中缓存TOP 20`
 ## 三. 各工具配置文件准备
 1. **pmkol/mosdns-x**
+[mosdns-config.yaml](../config-file/mosdns/config.yaml)
     - 太长，不在这里说明了，主要说明与`easymosdns`自带配置文件的区别
         ```yaml
 
@@ -146,262 +147,22 @@
             -   即使你使用不到，也应该保留它，可将`custom_pollute_domain.txt`清空，否则你需要修改上述查询的排序
         - 关于新增的各`log_query_...`，原版日志需将等级设为`debug`才能拿到各项信息，因此修改了一下源码，主要以`info`输出各`log_query_...`项日志，避免因debug造成日志文件过大
 2. **prom/prometheus**
-    ```yaml
-    # prometheus.yml
-    global:
-    scrape_interval: 10s
 
-    scrape_configs:
-    - job_name: "mosdns"
-        # scrape_timeout: 10s
-        metrics_path: "/metrics"
-        static_configs:
-        - targets:
-            # 指向mosdnsAPI，自行修改IP:端口
-            - 192.168.1.103:15011
-    # end
-    ```
+    [prometheus-prometheus.yml](../config-file/prometheus/prometheus.yml)
+
 3. **loki**
-    ````yaml
-    # config.yaml
-    auth_enabled: false
 
-    server:
-    http_listen_port: 3100
-    grpc_listen_port: 9096
+    [loki-config.yaml](../config-file/loki/config.yaml)
 
-    common:
-    instance_addr: 0.0.0.0
-    path_prefix: /tmp/loki
-    storage:
-        filesystem:
-        chunks_directory: /tmp/loki/chunks
-        rules_directory: /tmp/loki/rules
-    replication_factor: 1
-    ring:
-        kvstore:
-        store: inmemory
-
-    query_range:
-    results_cache:
-        cache:
-        embedded_cache:
-            enabled: true
-            max_size_mb: 100
-
-    schema_config:
-    configs:
-        - from: 2020-10-24
-        store: boltdb-shipper
-        object_store: filesystem
-        schema: v11
-        index:
-            prefix: index_
-            period: 24h
-
-    limits_config:
-    max_entries_limit_per_query: 10000000  # 单查询最大返回条目数
-    query_timeout: 60s                      # 查询超时时间
-    max_query_length: 8760h                 # 最大查询时间范围
-
-    ruler:
-    alertmanager_url: http://localhost:9093
-    # end
-    ```
 4. **vector**
-    ```yaml
-    # config.yaml
-    data_dir: /etc/vector
 
-    sources:
-    mosdns-log-file:
-        type: file
-        include:
-        - /var/log/plugin_info_log.log
-        read_from: beginning
-        file_key: "filename"
-        line_delimiter: "\n"
+    [vector-config.yaml](../config-file/vector/config.yaml)
 
-    transforms:
-    mosdns-input:
-        type: filter
-        inputs:
-        - mosdns-log-file
-        condition: |
-        .filename == "/var/log/plugin_info_log.log"
-
-    mosdns-data:
-        type: remap
-        inputs:
-        - mosdns-input
-        drop_on_error: true
-        source: |
-        .app = "mosdns"
-
-        del(.host)
-        del(.filename)
-        del(.source_type)
-
-        # 解析 mosdns JSON
-        . = merge!(., parse_json!(.message))
-
-        # 转换时间
-        .timestamp = parse_timestamp!(.time, format: "%Y-%m-%dT%H:%M:%S%.fZ")
-
-        # 生成去重key
-        .dedupe_key, err = .logger + "_" + .query_type_str
-        if err != null {
-            log("Failed to create dedupe_key: " + string!(err), level: "error")
-            .dedupe_key = "error_fallback_key"
-        }
-        
-        # 删除不必要字段
-        del(.message)
-        del(.time)
-        del(.context_id)
-        del(.query_type)
-        del(.dns_msg_id)
-
-
-    # 关键：DNS 查询去重
-    mosdns-dedupe:
-        type: dedupe
-        inputs:
-        - mosdns-data
-
-        # 按 dns_msg_id + query_type_str 去重
-        fields:
-        match: [dedupe_key]
-
-        # 避免无限缓存
-        cache:
-        num_events: 50000
-
-
-    sinks:
-    # 同步到 loki
-    loki:
-        type: loki
-        inputs:
-        - mosdns-data
-        - mosdns-dedupe
-        # 指向loki容器，自行修改IP、端口
-        endpoint: "http://192.168.1.60:15013"
-        tenant_id: "fake"
-        batch:
-        max_events: 1000
-        timeout_secs: 10
-        request:
-        retry_max_duration_secs: 300
-        retry_backoff_secs: 1
-        timestamp_format: rfc3339
-        encoding:
-        codec: json
-        labels:
-        app: "{{ app }}"
-        logger: "{{ logger }}"
-        query_type_str: "{{ query_type_str }}"
-        healthcheck:
-        enabled: true
-
-    # 调试输出，调试完成后请注释，重启容器
-    debug_mosdns:
-        type: console
-        inputs:
-        - mosdns-dedupe
-        encoding:
-        codec: json
-        pretty: true
-    # end
-    ```
 ## 四. Docker容器部署
 #### 推荐使用docker compose部署
-```yaml
-# docker-compose.yaml
-services:
-    mosdns:
-        container_name: mosdns
-        restart: unless-stopped
-        network_mode: host
-        # ports:
-           # - 53:53/udp
-           # - 53:53/tcp
-           # - 15011:9080  # API
-        volumes:
-            - /mnt/docker/easymosdns:/etc/mosdns   # 运行所需配置文件路径，非二进制文件路径，
-        image: irinesistiana/mosdns:v4.5.3
 
-        # 替换二进制文件命令 #
-        # 将二进制文件上传至宿主任意目录下，例如(/mnt/docker/easymosdns-tmp/),然后宿主机执行
-        # 赋可执行权限
-        # chmod +x /mnt/docker/easymosdns-tmp/mosdns
-        # 拷贝到容器内二进制运行路径
-        # docker cp /mnt/docker/easymosdns-tmp/mosdns mosdns:/usr/bin/mosdns
-        # 验证容器内二进制可执行权限
-        # docker exec mosdns ls -l /usr/bin/mosdns
-        # 验证容器内二进制版本
-        # docker exec mosdns mosdns version
-        # 若无可执行权限，执行一下命令
-        # docker exec mosdns chmod +x /usr/bin/mosdns
-        # 或者进入容器
-        # docker exec -it mosdns sh
-        # 容器内执行
-        # ls -l /usr/bin/mosdns
-        # chmod +x /usr/bin/mosdns
+[docker-compose.yaml](../docker-compsoe.yaml)
 
-    prometheus:
-        container_name: prometheus
-        restart: unless-stopped
-        networks:
-          - grafana-dashboard-network
-        ports:
-            # 将端口暴露给便于webUI查询数据
-            - 15012:9090
-        volumes:
-            - /mnt/docker/grafana-dashboard/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-        image: prom/prometheus:v3.0.0
-
-    loki:
-        container_name: loki
-        volumes:
-            - /mnt/docker/grafana-dashboard/loki:/loki
-        networks:
-          - grafana-dashboard-network
-        ports:
-            # 将端口暴露给vector推送使用
-            - 15013:3100
-        image: grafana/loki:main-92a4dda
-
-    vector:
-        container_name: vector
-        restart: unless-stopped
-        networks:
-          - grafana-dashboard-network
-        volumes:
-            - /mnt/docker/grafana-dashboard/vector:/etc/vector
-            # 注意容器 外 路径需要与 mosdns日志文件plugin_info_log.log路径 一致
-            # 注意容器 内 路径需要与 config.transforms.mosdns-input.condition.filename 一致
-            - /mnt/docker/easymosdns/plugin_info_log.log:/var/log/plugin_info_log.log
-        image: timberio/vector:nightly-2026-03-03-alpine
-        command: ["--config", "/etc/vector/config.yaml"] 
-
-    grafana: 
-        container_name: grafana
-        restart: unless-stopped
-        networks:
-          - grafana-dashboard-network
-        ports:
-            # webUI端口
-            - 15014:3000
-        volumes:
-            - /mnt/docker/grafana-dashboard/grafana:/var/lib/grafana
-        image: grafana/grafana-image-tags:13.0.0-22707891732-amd64
-
-networks:
-    grafana-dashboard-network:
-        driver: bridge 
-# end
-```
 ## 五. grafana添加数据源及导入面板
 1.  打开`grafana`web面板`http://ip:15014`
 2.  设置密码，默认账号`admin`、密码`admin`，首次登录需要修改密码
@@ -431,4 +192,4 @@ networks:
     ````
 6.  点击左侧菜单，选择`仪表板` → 点击`创建数据面板` → 点击`导入仪表板` → 点击`上传仪表板JSON文件`上传 → 点击`更改uid`(随意长度一直的字符) → 点击 `import`。注意，此`uid`非`loki`数据源的`uid`
 
-7.  [参考截图](readmd-file/images/index.md)
+7.  [参考截图](images/index.md)
