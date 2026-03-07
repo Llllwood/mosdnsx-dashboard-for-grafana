@@ -1,0 +1,101 @@
+data_dir: /etc/vector
+
+sources:
+  mosdns-log-file:
+    type: file
+    include:
+      - /var/log/plugin_info_log.log
+    read_from: beginning
+    file_key: "filename"
+    line_delimiter: "\n"
+
+transforms:
+  mosdns-input:
+    type: filter
+    inputs:
+      - mosdns-log-file
+    condition: |
+      .filename == "/var/log/plugin_info_log.log"
+
+  mosdns-data:
+    type: remap
+    inputs:
+      - mosdns-input
+    drop_on_error: true
+    source: |
+      .app = "mosdns"
+
+      del(.host)
+      del(.filename)
+      del(.source_type)
+
+      # 解析 mosdns JSON
+      . = merge!(., parse_json!(.message))
+
+      # 转换时间
+      .timestamp = parse_timestamp!(.time, format: "%Y-%m-%dT%H:%M:%S%.fZ")
+
+      # 生成去重key
+      .dedupe_key, err = .logger + "_" + .query_type_str
+      if err != null {
+        log("Failed to create dedupe_key: " + string!(err), level: "error")
+        .dedupe_key = "error_fallback_key"
+      }
+       
+      # 删除不必要字段
+      del(.message)
+      del(.time)
+      del(.context_id)
+      del(.query_type)
+      del(.dns_msg_id)
+
+
+  # 关键：DNS 查询去重
+  mosdns-dedupe:
+    type: dedupe
+    inputs:
+      - mosdns-data
+
+    # 按 dns_msg_id + query_type_str 去重
+    fields:
+      match: [dedupe_key]
+
+    # 避免无限缓存
+    cache:
+      num_events: 50000
+
+
+sinks:
+  # 同步到 loki
+  loki:
+    type: loki
+    inputs:
+      - mosdns-data
+      - mosdns-dedupe
+    # 指向loki容器，自行修改IP、端口
+    endpoint: "http://192.168.1.60:15013"
+    tenant_id: "fake"
+    batch:
+      max_events: 1000
+      timeout_secs: 10
+    request:
+      retry_max_duration_secs: 300
+      retry_backoff_secs: 1
+      timestamp_format: rfc3339
+    encoding:
+      codec: json
+    labels:
+      app: "{{ app }}"
+      logger: "{{ logger }}"
+      query_type_str: "{{ query_type_str }}"
+    healthcheck:
+      enabled: true
+
+  # 调试输出
+  debug_mosdns:
+    type: console
+    inputs:
+      - mosdns-dedupe
+    encoding:
+      codec: json
+      pretty: true

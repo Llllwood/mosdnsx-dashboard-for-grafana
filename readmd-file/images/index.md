@@ -1,0 +1,18 @@
+#### 1.设置语言
+![图片描述](readmd-file/images/1.设置语言.png)
+#### 2.添加数据源-1
+![图片描述](readmd-file/images/2.添加数据源-1.png)
+#### 3.添加数据源-2
+![图片描述](readmd-file/images/3.添加数据源-2-prometheus.png)
+#### 4.添加数据源-3
+![图片描述](readmd-file/images/4.添加数据源-3-loki.png)
+#### 5.修改json文件
+![图片描述](readmd-file/images/5.json-uid.png)
+#### 6.创建仪表板-1
+![图片描述](readmd-file/images/6.创建仪表板-1.png)
+#### 7.创建仪表板-2
+![图片描述](readmd-file/images/7.创建仪表板-2.png)
+#### 8.创建仪表板-3
+![图片描述](readmd-file/images/8.创建仪表板-3.png)
+#### 9.创建仪表板-4
+![图片描述](readmd-file/images/9.创建仪表板-4.png)

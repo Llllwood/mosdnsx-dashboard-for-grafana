@@ -1,0 +1,35 @@
+plugins:
+  - tag: "global_metrics"
+    type: "metrics_collector"
+
+  # 匹配自定义污染域名的插件
+  - tag: query_is_custom_pollute_domain
+    type: query_matcher
+    args:
+      domain:
+        - "provider:custompollutedomain"
+
+  - tag: "log_query_statr"
+    type: "infolog"
+
+  - tag: "log_query_host"
+    type: "infolog"
+      
+  - tag: "log_query_cache_hit"
+    type: "infolog"
+
+  - tag: "log_query_is_custom_pollute_domain"
+    type: "infolog"
+
+  - tag: "log_query_is_cn_domain"
+    type: "infolog"
+
+  - tag: "log_query_is_ad"
+    type: "infolog"
+
+  - tag: "log_query_is_local_resolve"
+    type: "infolog"
+
+  - tag: "log_query_is_remote_resolve"
+    type: "infolog"
+
