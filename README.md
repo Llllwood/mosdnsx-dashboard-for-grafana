@@ -1,5 +1,6 @@
 # grafana-dashboard-for-mosdns-x
 ### mosdns-x的grafana仪表板
+不适配原版mosdns-x，仅适配[此仓库修改编译后的版本](https://github.com/Llllwood/mosdns-x)
 
 部署步骤参阅[mosdns-x的grafana仪表板](readmd-file/README.md)
 
