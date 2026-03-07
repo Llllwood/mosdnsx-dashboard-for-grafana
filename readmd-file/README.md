@@ -1,8 +1,8 @@
 ## 一. 所使用工具
 1. **pmkol/mosdns-x**，**irinesistiana/mosdns** *(v4.5.3)*
-    - `pmkol/mosdns-x`为二进制文件，mosdns核心
+    - `pmkol/mosdns-x`为二进制文件，mosdns核心，注意，不适配原版mosdns-x，仅适配[此仓库修改编译后的版本](https://github.com/Llllwood/mosdns-x)
     - `irinesistiana/mosdns`为docker容器镜像
-    - 也可以直接运行二进制文件
+    - 也可以不使用容器部署mosdns-x，直接运行二进制文件
 2. **prom/prometheus** *(v3.0.0)*,为 `5.grafana` 提供数据源服务
 3. **grafana/loki** *(main-92a4dda)*,为 `5.grafana` 提供数据源服务
 4. **timberio/vector** *(nightly-2026-03-03-alpine)*，解析 `1.mosdns` 日志文本，推送至 `3.loki`

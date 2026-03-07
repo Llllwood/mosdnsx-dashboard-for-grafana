@@ -8,15 +8,15 @@ services:
            # - 53:53/tcp
            # - 15011:9080  # API
         volumes:
-            - /mnt/docker/easymosdns:/etc/mosdns   # 运行所需配置文件路径，非二进制文件路径，
+            - ./mosdns:/etc/mosdns   # 运行所需配置文件路径，非二进制文件路径，
         image: irinesistiana/mosdns:v4.5.3
 
         # 替换二进制文件命令 #
-        # 将二进制文件上传至宿主任意目录下，例如(/mnt/docker/easymosdns-tmp/),然后宿主机执行
+        # 将二进制文件上传至宿主任意目录下，例如(/mnt/docker/mosdns-tmp/),然后宿主机执行
         # 赋可执行权限
-        # chmod +x /mnt/docker/easymosdns-tmp/mosdns
+        # chmod +x /mnt/docker/mosdns-tmp/mosdns
         # 拷贝到容器内二进制运行路径
-        # docker cp /mnt/docker/easymosdns-tmp/mosdns mosdns:/usr/bin/mosdns
+        # docker cp /mnt/docker/mosdns-tmp/mosdns mosdns:/usr/bin/mosdns
         # 验证容器内二进制可执行权限
         # docker exec mosdns ls -l /usr/bin/mosdns
         # 验证容器内二进制版本
@@ -38,13 +38,13 @@ services:
             # 将端口暴露给便于webUI查询数据
             - 15012:9090
         volumes:
-            - /mnt/docker/grafana-dashboard/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+            - ./grafana-dashboard/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
         image: prom/prometheus:v3.0.0
 
     loki:
         container_name: loki
         volumes:
-            - /mnt/docker/grafana-dashboard/loki:/loki
+            - ./grafana-dashboard/loki:/loki
         networks:
           - grafana-dashboard-network
         ports:
@@ -58,10 +58,10 @@ services:
         networks:
           - grafana-dashboard-network
         volumes:
-            - /mnt/docker/grafana-dashboard/vector:/etc/vector
-            # 注意容器 外 路径需要与 mosdns日志文件路径 一致
+            - ./grafana-dashboard/vector:/etc/vector
+            # 注意容器 外 路径需要与 mosdns日志文件plugin_info_log.log路径 一致
             # 注意容器 内 路径需要与 config.transforms.mosdns-input.condition.filename 一致
-            - /mnt/docker/easymosdns/mosdns.log:/var/log/mosdns.log
+            - ./mosdns/plugin_info_log.log:/var/log/plugin_info_log.log
         image: timberio/vector:nightly-2026-03-03-alpine
         command: ["--config", "/etc/vector/config.yaml"] 
 
@@ -74,7 +74,7 @@ services:
             # webUI端口
             - 15014:3000
         volumes:
-            - /mnt/docker/grafana-dashboard/grafana:/var/lib/grafana
+            - ./grafana-dashboard/grafana:/var/lib/grafana
         image: grafana/grafana-image-tags:13.0.0-22707891732-amd64
 
 networks:
