@@ -81,7 +81,7 @@
                 exec:
                     # ========== 新增：第一步执行metrics统计 ==========
                     - global_metrics
-                    - log_query_statr   # 这里插入新增的日志插件
+                    - log_query_start   # 这里插入新增的日志插件
                     - hosts
 
                     - .. # 其他

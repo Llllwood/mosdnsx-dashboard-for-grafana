@@ -416,7 +416,7 @@
           },
           "direction": "backward",
           "editorMode": "builder",
-          "expr": "sum by(instance) (count_over_time({app=\"mosdns\", logger=\"log_query_cache_hit\"} | json [$__range])) / sum by(instance) (count_over_time({app=\"mosdns\", logger=\"log_query_statr\"} | json [$__range]))",
+          "expr": "sum by(instance) (count_over_time({app=\"mosdns\", logger=\"log_query_cache_hit\"} | json [$__range])) / sum by(instance) (count_over_time({app=\"mosdns\", logger=\"log_query_start\"} | json [$__range]))",
           "queryType": "range",
           "refId": "A"
         }
@@ -603,7 +603,7 @@
             {
               "direction": "backward",
               "editorMode": "code",
-              "expr": "topk(20, sum by(domain) (count_over_time({app=\"mosdns\", logger=\"log_query_statr\"} | json | domain != `` [$__range])))",
+              "expr": "topk(20, sum by(domain) (count_over_time({app=\"mosdns\", logger=\"log_query_start\"} | json | domain != `` [$__range])))",
               "queryType": "instant",
               "refId": "A"
             }
@@ -741,7 +741,7 @@
             {
               "direction": "backward",
               "editorMode": "builder",
-              "expr": "topk(20, sum by(client_ip) (count_over_time({app=\"mosdns\", logger=\"log_query_statr\"} | json | client_ip != `` [$__range])))",
+              "expr": "topk(20, sum by(client_ip) (count_over_time({app=\"mosdns\", logger=\"log_query_start\"} | json | client_ip != `` [$__range])))",
               "queryType": "instant",
               "refId": "A"
             }
@@ -1477,7 +1477,7 @@
               },
               "direction": "backward",
               "editorMode": "builder",
-              "expr": "{app=\"mosdns\", logger!=\"log_query_statr\"}",
+              "expr": "{app=\"mosdns\", logger!=\"log_query_start\"}",
               "queryType": "range",
               "refId": "A"
             }

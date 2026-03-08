@@ -17,6 +17,7 @@ transforms:
     condition: |
       .filename == "/var/log/plugin_info_log.log"
 
+  # 解析提取json字段
   mosdns-data:
     type: remap
     inputs:
@@ -28,50 +29,61 @@ transforms:
       del(.host)
       del(.filename)
       del(.source_type)
-
-      # 解析 mosdns JSON
+      
       . = merge!(., parse_json!(.message))
 
-      # 转换时间
       .timestamp = parse_timestamp!(.time, format: "%Y-%m-%dT%H:%M:%S%.fZ")
 
-      # 生成去重key
-      .dedupe_key, err = .logger + "_" + .query_type_str
-      if err != null {
-        log("Failed to create dedupe_key: " + string!(err), level: "error")
-        .dedupe_key = "error_fallback_key"
-      }
-       
       # 删除不必要字段
       del(.message)
       del(.time)
-      del(.context_id)
+      # del(.context_id)
       del(.query_type)
       del(.dns_msg_id)
 
-
-  # 关键：DNS 查询去重
-  mosdns-dedupe:
-    type: dedupe
+  # 过滤掉缓存返回空response_ips空的日志
+  mosdns-filter:
+    type: filter
     inputs:
       - mosdns-data
+    condition: '!(.logger == "log_query_cache_hit" && !exists(.response_ips))'
 
-    # 按 dns_msg_id + query_type_str 去重
-    fields:
-      match: [dedupe_key]
+  # 合并相同插件处理器、查询ID的日志
+  mosdns-reduce:
+    type: reduce
+    inputs:
+      - mosdns-filter
+    group_by:
+      - logger
+      - context_id
+    merge_strategies:
+      timestamp: retain           # 取最后一个时间戳
+      context_id: discard         # 取第一个context_id
+      query_type_str: concat      # 字符串合并
+      response_ips: flat_unique   # 数组合并
+    expire_after_ms: 3000         # 合并事件过期时间
+    end_every_period_ms: 5000     # 合并group_by保留时间
 
-    # 避免无限缓存
-    cache:
-      num_events: 50000
-
+  # 简单暴力去重 合并后query_type_str字段值
+  mosdns-normalize:
+    type: remap
+    inputs:
+      - mosdns-reduce
+    source: |
+        if exists(.query_type_str) && is_string(.query_type_str) {
+            if .query_type_str == "A A" || .query_type_str == "A A A" || .query_type_str == "A A A A" || .query_type_str == "A A A A A" || .query_type_str == "A A A A A A" || .query_type_str == "A A A A A A A" {
+                .query_type_str = "A"
+            } else if .query_type_str != "A" && .query_type_str != "AAAA" && .query_type_str != "" {
+                .query_type_str = "A AAAA"
+            }
+        }
 
 sinks:
   # 同步到 loki
   loki:
     type: loki
     inputs:
-      - mosdns-data
-      - mosdns-dedupe
+      - mosdns-normalize
     # 指向loki容器，自行修改IP、端口
     endpoint: "http://192.168.1.60:15013"
     tenant_id: "fake"
@@ -91,11 +103,11 @@ sinks:
     healthcheck:
       enabled: true
 
-  # 调试输出
+  # 调试输出，调试完成后注释掉
   debug_mosdns:
     type: console
     inputs:
-      - mosdns-dedupe
+      - mosdns-normalize
     encoding:
       codec: json
       pretty: true

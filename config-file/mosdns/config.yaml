@@ -276,7 +276,7 @@ plugins:
       exec:
         # ========== 新增：第一步执行metrics统计 ==========
         - global_metrics
-        - log_query_statr
+        - log_query_start
 
         # 域名映射IP
         - hosts

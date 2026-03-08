@@ -9,7 +9,7 @@ plugins:
       domain:
         - "provider:custompollutedomain"
 
-  - tag: "log_query_statr"
+  - tag: "log_query_start"
     type: "infolog"
 
   - tag: "log_query_host"
