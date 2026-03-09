@@ -15,7 +15,7 @@
       }
     ]
   },
-  "editable": true,
+  "editable": false,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "links": [],
@@ -202,7 +202,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "beh0rrgo93abka"
+        "uid": "dff3szdzugd1ca"
       },
       "fieldConfig": {
         "defaults": {
@@ -218,7 +218,7 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 0,
+            "fillOpacity": 3,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -226,17 +226,16 @@
               "viz": false
             },
             "insertNulls": false,
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineStyle": {
               "fill": "solid"
             },
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
-              "log": 2,
-              "type": "log"
+              "type": "linear"
             },
-            "showPoints": "auto",
+            "showPoints": "never",
             "showValues": false,
             "spanNulls": false,
             "stacking": {
@@ -282,8 +281,8 @@
           "showLegend": true
         },
         "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
+          "hideZeros": true,
+          "mode": "multi",
           "sort": "none"
         }
       },
@@ -292,7 +291,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "beh0rrgo93abka"
+            "uid": "dff3szdzugd1ca"
           },
           "editorMode": "code",
           "expr": "ceil(increase(mosdns_plugin_global_metrics_response_latency_millisecond_bucket{le!=\"+Inf\"}[$__interval]))",
@@ -359,7 +358,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "cerwl3npr2whsc"
+        "uid": "cff3tqpk14tmoc"
       },
       "fieldConfig": {
         "defaults": {
@@ -412,7 +411,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "cerwl3npr2whsc"
+            "uid": "cff3tqpk14tmoc"
           },
           "direction": "backward",
           "editorMode": "builder",
@@ -503,7 +502,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "cerwl3npr2whsc"
+            "uid": "cff3tqpk14tmoc"
           },
           "fieldConfig": {
             "defaults": {
@@ -569,7 +568,7 @@
                 "properties": [
                   {
                     "id": "custom.width",
-                    "value": 444
+                    "value": 415
                   }
                 ]
               }
@@ -637,7 +636,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "cerwl3npr2whsc"
+            "uid": "cff3tqpk14tmoc"
           },
           "fieldConfig": {
             "defaults": {
@@ -707,7 +706,7 @@
                 "properties": [
                   {
                     "id": "custom.width",
-                    "value": 445
+                    "value": 415
                   }
                 ]
               }
@@ -775,7 +774,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "cerwl3npr2whsc"
+            "uid": "cff3tqpk14tmoc"
           },
           "fieldConfig": {
             "defaults": {
@@ -841,7 +840,7 @@
                 "properties": [
                   {
                     "id": "custom.width",
-                    "value": 442
+                    "value": 415
                   }
                 ]
               }
@@ -909,7 +908,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "cerwl3npr2whsc"
+            "uid": "cff3tqpk14tmoc"
           },
           "fieldConfig": {
             "defaults": {
@@ -975,7 +974,7 @@
                 "properties": [
                   {
                     "id": "custom.width",
-                    "value": 441
+                    "value": 415
                   }
                 ]
               }
@@ -985,7 +984,7 @@
             "h": 9,
             "w": 8,
             "x": 0,
-            "y": 32
+            "y": 20
           },
           "id": 104,
           "options": {
@@ -1043,7 +1042,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "cerwl3npr2whsc"
+            "uid": "cff3tqpk14tmoc"
           },
           "fieldConfig": {
             "defaults": {
@@ -1109,7 +1108,7 @@
                 "properties": [
                   {
                     "id": "custom.width",
-                    "value": 447
+                    "value": 415
                   }
                 ]
               }
@@ -1119,7 +1118,7 @@
             "h": 9,
             "w": 8,
             "x": 8,
-            "y": 32
+            "y": 20
           },
           "id": 105,
           "options": {
@@ -1177,7 +1176,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "cerwl3npr2whsc"
+            "uid": "cff3tqpk14tmoc"
           },
           "fieldConfig": {
             "defaults": {
@@ -1243,7 +1242,7 @@
                 "properties": [
                   {
                     "id": "custom.width",
-                    "value": 445
+                    "value": 415
                   }
                 ]
               }
@@ -1253,7 +1252,7 @@
             "h": 9,
             "w": 8,
             "x": 16,
-            "y": 32
+            "y": 20
           },
           "id": 100,
           "options": {
@@ -1313,7 +1312,7 @@
       "type": "row"
     },
     {
-      "collapsed": true,
+      "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1321,217 +1320,280 @@
         "y": 11
       },
       "id": 109,
-      "panels": [
+      "panels": [],
+      "title": "应答明细",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "cff3tqpk14tmoc"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "red",
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false,
+            "wrapHeaderText": false,
+            "wrapText": false
+          },
+          "mappings": [],
+          "noValue": "-",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "时间"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 200
+              },
+              {
+                "id": "custom.filterable",
+                "value": false
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "客户端IP"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 145
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "主机名"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 415
+              },
+              {
+                "id": "custom.inspect",
+                "value": true
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "应答器"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 105
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "log_query_cache_hit": {
+                        "color": "semi-dark-green",
+                        "index": 0,
+                        "text": "缓存"
+                      },
+                      "log_query_is_ad": {
+                        "color": "red",
+                        "index": 1,
+                        "text": "阻止"
+                      },
+                      "log_query_is_local_resolve": {
+                        "color": "blue",
+                        "index": 2,
+                        "text": "本地查询"
+                      },
+                      "log_query_is_remote_resolve": {
+                        "color": "semi-dark-purple",
+                        "index": 3,
+                        "text": "远程查询"
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "查询类型"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 105
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "查询ID"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 84
+              },
+              {
+                "id": "custom.align",
+                "value": "left"
+              },
+              {
+                "id": "custom.filterable"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "应答IP"
+            },
+            "properties": [
+              {
+                "id": "custom.inspect",
+                "value": true
+              },
+              {
+                "id": "custom.filterable"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 12
+      },
+      "id": 111,
+      "options": {
+        "cellHeight": "sm",
+        "enablePagination": false,
+        "frameIndex": 0,
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "查询ID"
+          }
+        ]
+      },
+      "pluginVersion": "13.0.0-22707891732",
+      "targets": [
         {
           "datasource": {
             "type": "loki",
-            "uid": "cerwl3npr2whsc"
+            "uid": "cff3tqpk14tmoc"
           },
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "fixedColor": "red",
-                "mode": "thresholds"
-              },
-              "custom": {
-                "align": "auto",
-                "cellOptions": {
-                  "type": "auto"
-                },
-                "filterable": true,
-                "footer": {
-                  "reducers": []
-                },
-                "inspect": false,
-                "wrapHeaderText": false,
-                "wrapText": false
-              },
-              "mappings": [
-                {
-                  "options": {
-                    "log_query_cache_hit": {
-                      "color": "green",
-                      "index": 0,
-                      "text": "缓存"
-                    },
-                    "log_query_is_ad": {
-                      "color": "red",
-                      "index": 1,
-                      "text": "阻止"
-                    },
-                    "log_query_is_local_resolve": {
-                      "index": 2,
-                      "text": "本地查询"
-                    },
-                    "log_query_is_remote_resolve": {
-                      "index": 3,
-                      "text": "远程查询"
-                    }
-                  },
-                  "type": "value"
-                }
-              ],
-              "noValue": "-",
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": 0
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              }
-            },
-            "overrides": [
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "时间"
-                },
-                "properties": [
-                  {
-                    "id": "custom.width",
-                    "value": 250
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "客户端IP"
-                },
-                "properties": [
-                  {
-                    "id": "custom.width",
-                    "value": 213
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "主机名"
-                },
-                "properties": [
-                  {
-                    "id": "custom.width",
-                    "value": 300
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "应答器"
-                },
-                "properties": [
-                  {
-                    "id": "custom.width",
-                    "value": 192
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "查询类型"
-                },
-                "properties": [
-                  {
-                    "id": "custom.width",
-                    "value": 128
-                  }
-                ]
-              }
-            ]
-          },
-          "gridPos": {
-            "h": 12,
-            "w": 24,
-            "x": 0,
-            "y": 12
-          },
-          "id": 111,
-          "options": {
-            "cellHeight": "sm",
-            "enablePagination": false,
-            "frameIndex": 0,
-            "showHeader": true,
-            "sortBy": [
-              {
-                "desc": true,
-                "displayName": "时间"
-              }
-            ]
-          },
-          "pluginVersion": "13.0.0-22707891732",
-          "targets": [
-            {
-              "datasource": {
-                "type": "loki",
-                "uid": "cerwl3npr2whsc"
-              },
-              "direction": "backward",
-              "editorMode": "builder",
-              "expr": "{app=\"mosdns\", logger!=\"log_query_start\"}",
-              "queryType": "range",
-              "refId": "A"
-            }
-          ],
-          "title": "DNS查询应答",
-          "transformations": [
-            {
-              "id": "extractFields",
-              "options": {
-                "delimiter": ",",
-                "format": "json",
-                "jsonPaths": [],
-                "keepTime": false,
-                "replace": false,
-                "source": "Line"
-              }
-            },
-            {
-              "id": "filterFieldsByName",
-              "options": {
-                "include": {
-                  "names": [
-                    "Time",
-                    "client_ip",
-                    "domain",
-                    "logger",
-                    "query_type_str",
-                    "response_ips"
-                  ]
-                }
-              }
-            },
-            {
-              "id": "organize",
-              "options": {
-                "excludeByName": {},
-                "includeByName": {},
-                "indexByName": {},
-                "renameByName": {
-                  "Time": "时间",
-                  "client_ip": "客户端IP",
-                  "domain": "主机名",
-                  "logger": "应答器",
-                  "query_type_str": "查询类型",
-                  "response_ips": "应答IP"
-                }
-              }
-            }
-          ],
-          "type": "table"
+          "direction": "backward",
+          "editorMode": "builder",
+          "expr": "{app=\"mosdns\", logger!=\"log_query_start\"}",
+          "queryType": "range",
+          "refId": "A"
         }
       ],
-      "title": "应答明细",
-      "type": "row"
+      "title": "DNS查询应答",
+      "transformations": [
+        {
+          "id": "extractFields",
+          "options": {
+            "delimiter": ",",
+            "format": "json",
+            "jsonPaths": [],
+            "keepTime": false,
+            "replace": false,
+            "source": "Line"
+          }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Time",
+                "client_ip",
+                "domain",
+                "logger",
+                "query_type_str",
+                "response_ips",
+                "context_id"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {
+              "Time": 1,
+              "client_ip": 2,
+              "context_id": 0,
+              "domain": 3,
+              "logger": 4,
+              "query_type_str": 5,
+              "response_ips": 6
+            },
+            "renameByName": {
+              "Time": "时间",
+              "client_ip": "客户端IP",
+              "context_id": "查询ID",
+              "domain": "主机名",
+              "logger": "应答器",
+              "query_type_str": "查询类型",
+              "response_ips": "应答IP"
+            }
+          }
+        }
+      ],
+      "type": "table"
     },
     {
       "collapsed": true,
@@ -1539,7 +1601,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 12
+        "y": 24
       },
       "id": 110,
       "panels": [
@@ -1559,7 +1621,7 @@
                 "barAlignment": 0,
                 "barWidthFactor": 0.6,
                 "drawStyle": "line",
-                "fillOpacity": 0,
+                "fillOpacity": 10,
                 "gradientMode": "none",
                 "hideFrom": {
                   "legend": false,
@@ -1605,7 +1667,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 360
+            "y": 429
           },
           "id": 5,
           "options": {
@@ -1617,7 +1679,7 @@
             },
             "tooltip": {
               "hideZeros": false,
-              "mode": "single",
+              "mode": "multi",
               "sort": "none"
             }
           },
@@ -1653,7 +1715,7 @@
         "baseFilters": [],
         "datasource": {
           "type": "loki",
-          "uid": "cerwl3npr2whsc"
+          "uid": "cff3tqpk14tmoc"
         },
         "filters": [],
         "name": "Filters",
@@ -1668,8 +1730,7 @@
   "timepicker": {},
   "timezone": "browser",
   "title": "MosDNS-X 监控",
-  "weekStart": "",
-  "version": 23,
-  "uid": "cfexo17bqc9a8a",
-  "id": 15
+  "uid": "2311k4xc035l2p",
+  "version": 2,
+  "weekStart": ""
 }

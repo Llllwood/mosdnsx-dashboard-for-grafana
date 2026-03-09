@@ -51,6 +51,7 @@ services:
             # 将端口暴露给vector推送使用
             - 15013:3100
         image: grafana/loki:main-92a4dda
+        command: -config.file=/loki/config.yaml
 
     vector:
         container_name: vector

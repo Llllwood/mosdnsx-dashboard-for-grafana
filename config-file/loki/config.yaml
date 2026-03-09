@@ -6,11 +6,11 @@ server:
 
 common:
   instance_addr: 0.0.0.0
-  path_prefix: /tmp/loki
+  path_prefix: /loki
   storage:
     filesystem:
-      chunks_directory: /tmp/loki/chunks
-      rules_directory: /tmp/loki/rules
+      chunks_directory: /loki/chunks
+      rules_directory: /loki/rules
   replication_factor: 1
   ring:
     kvstore:
@@ -25,10 +25,10 @@ query_range:
 
 schema_config:
   configs:
-    - from: 2020-10-24
-      store: boltdb-shipper
+    - from: 2026-03-08
+      store: tsdb
       object_store: filesystem
-      schema: v11
+      schema: v13
       index:
         prefix: index_
         period: 24h
@@ -37,6 +37,7 @@ limits_config:
   max_entries_limit_per_query: 10000000  # 单查询最大返回条目数
   query_timeout: 60s                      # 查询超时时间
   max_query_length: 8760h                 # 最大查询时间范围
+  max_query_series: 1000
 
 ruler:
   alertmanager_url: http://localhost:9093
